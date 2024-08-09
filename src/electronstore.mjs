@@ -30,3 +30,7 @@ export function SetMacroKeybindData(data)
 {
     store.set("Keybinds",data)
 }
+export function DeleteSessionData()
+{
+    store.delete("SessionData")
+}

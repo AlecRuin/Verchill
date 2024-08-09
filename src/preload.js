@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld("electronAPI",{
     SetMacro:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
     SetVolume:(Volume)=>{ipcRenderer.send("SetVolume",Volume)},
     SaveVolume:(volume)=>{ipcRenderer.send("SaveVolume",volume)},
+    DeleteSessionData:()=>{ipcRenderer.send("DeleteSessionData")},
 
     SignalToRenderer:async(channel,callback)=>{ipcRenderer.on(channel,(e,...args)=>{callback(...args)})}
 })

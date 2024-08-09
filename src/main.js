@@ -3,7 +3,7 @@ const path = require('node:path');
 const windowStateKeeper = require("electron-window-state")
 require("ts-node/register")
 const {setVolumeToZero,getAllSessions,SetVolume} = require("./VolumeMixer")
-let GetSessionData,GetVolumeData,GetMacroKeybindData,SetSessionData,SetVolumeData,SetMacroKeybindData;
+let GetSessionData,GetVolumeData,GetMacroKeybindData,SetSessionData,SetVolumeData,SetMacroKeybindData,DeleteSessionData;
 async function loadModules(){
   let module = await import("./electronstore.mjs")
   GetSessionData=module.GetSessionData;
@@ -12,6 +12,7 @@ async function loadModules(){
   SetSessionData=module.SetSessionData;
   SetVolumeData=module.SetVolumeData;
   SetMacroKeybindData=module.SetMacroKeybindData;
+  DeleteSessionData=module.DeleteSessionData
 }
 loadModules().then(()=>{
   //const {GetSessionData,GetVolumeData,GetMacroKeybindData,SetSessionData,SetVolumeData,SetMacroKeybindData} = require("./es6tocommon.mjs")
@@ -37,7 +38,7 @@ loadModules().then(()=>{
       {
         label:"File",
         submenu:[
-          {label:"Exit",click:()=>{app.quit()}}
+          {label:"Exit",click:()=>{app.exit()}}
         ]
       }
     ])
@@ -169,11 +170,11 @@ function showOverlay() {
     let unknownCount=0
     AllSessions = AllSessions.map(obj=>({
       ...obj,
-      name:obj.name===""?`UNKNOWN${unknownCount++}`:obj.name
+      name:obj.name===""?`UNKNOWN${unknownCount++}`:obj.name.trim().replace(/\s+/g, '')
     }))
     if(!SessionData){
       SessionData={SideA:[],SideB:[],Ignore:[]}
-      AllSessions.forEach(entry=>SessionData.SideA.push(entry.name||`UNKNOWN${unknownCount++}`))
+      AllSessions.forEach(entry=>SessionData.SideA.push(entry.name.trim().replace(/\s+/g, '')||`UNKNOWN${unknownCount++}`))
     }else{
       let flag=true
       AllSessions.forEach(entry=>{
@@ -232,6 +233,9 @@ function showOverlay() {
     volume=volume
     SetVolume(SessionData,volume)
     SetVolumeData(volume)
+  })
+  ipcMain.on("DeleteSessionData",()=>{
+    DeleteSessionData()
   })
   function DisconnectListeners(){}
 

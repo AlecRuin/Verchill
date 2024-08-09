@@ -56,14 +56,14 @@ export function SetVolume(Channel:any,Volume:number){
             device.sessions.map(entry=>{
                 for(let item1 of Channel.SideA)
                 {
-                    if(item1===entry.name){
+                    if(item1.trim().replace(/\s+/g, '')===entry.name.trim().replace(/\s+/g, '')){
                         entry.volume = SideA/100;
                         break;
                     }
                 }
                 for(let item2 of Channel.SideB)
                 {
-                    if(item2===entry.name){
+                    if(item2.trim().replace(/\s+/g, '')===entry.name.trim().replace(/\s+/g, '')){
                         entry.volume = SideB/100;
                         break;
                     }

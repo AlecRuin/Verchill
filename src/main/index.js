@@ -50,7 +50,7 @@ function RefreshSessions(){
         console.log(result);
         SessionData=result.SessionData
         result.AllSessions.forEach(entry=>{
-            let id = `${!entry.name ? `UNKNOWN${unknownCount++}`:entry.name.trim()}`;
+            let id = `${!entry.name ? `UNKNOWN${unknownCount++}`:entry.name.trim().replace(/\s+/g, '')}`;
             mainBody.insertAdjacentHTML("beforeend",
                 `
                 <tr class="mainBodyEntry" id=${id}>
@@ -96,3 +96,8 @@ document.addEventListener("DOMContentLoaded",()=>{
         slider.value=volume
     })
 })
+function ResetSavedData()
+{
+    window.electronAPI.SaveVolume(0)
+    window.electronAPI.DeleteSessionData()
+}
