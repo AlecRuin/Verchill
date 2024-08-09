@@ -1,0 +1,45 @@
+{
+  "name": "Verchill",
+  "productName": "Verchill",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\"",
+    "nodemon": "nodemon --ext js,html,css,ts --watch . --exec npm start",
+    "build":"electron-builder"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^22.1.0",
+    "electron": "31.3.1",
+    "nodemon": "^3.1.4"
+  },
+  "keywords": [],
+  "author": {
+    "name": "AlecRuin",
+    "email": "ruinhard@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.0",
+    "electron-window-state": "^5.0.3",
+    "esm": "^3.2.25",
+    "native-sound-mixer": "^3.4.5-win",
+    "node-global-key-listener": "^0.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}

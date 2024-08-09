@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verchill Audio Mixer</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h3>Verchill</h3>
+    <p style="text-wrap: nowrap;">
+      Increase Side A, Decrease Side B macro: <button id="SideA">LEFT CONTROL + LEFT ALT + MINUS/UNDERLINE</button>
+    </p>
+    <p>
+      Increase Side B, Decrease Side B macro: <button id="SideB">LEFT CONTROL + LEFT ALT + PLUS/EQUALS</button>
+    </p>
+    <button onclick="RefreshSessions()">Refresh</button>
+    <div class="volume-container">
+      <p>Side A</p>
+      <input type="range" id="volume-slider" min="-100" max="100" value="0">
+      <p>Side B</p>
+    </div>
+    <table style="width: 100%;" class="mainBody">
+      <tr class="mainBodyEntry" id="Label">
+        <th></th>
+        <th>Side A</th>
+        <th>Side B</th>
+        <th>Ignore</th>
+      </tr>
+    </table>
+  </body>
+  <script src="./index.js"></script>
+</html>
