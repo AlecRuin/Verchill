@@ -34,3 +34,11 @@ export function DeleteSessionData()
 {
     store.delete("SessionData")
 }
+export function GetLoggingState()
+{
+    return store.get("LoggingState")
+}
+export function SetLoggingState(data)
+{
+    store.set("LoggingState",data)
+}

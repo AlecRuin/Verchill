@@ -1,5 +1,4 @@
-let mainBody
-let SessionData
+let mainBody,SessionData,SideAButton,SideBButton,CurrentMacroLabel,Popup
 function DestroyAllSessionVisualizers(){
     document.querySelectorAll(".mainBodyEntry").forEach(entry=>{
         console.log(entry);
@@ -77,27 +76,63 @@ function RefreshSessions(){
 
 document.addEventListener("DOMContentLoaded",()=>{
     mainBody = document.querySelector(".mainBody")
+    SideAButton=document.getElementById('SideA')
+    SideBButton=document.getElementById("SideB")
+    Popup=document.getElementById('popup')
+    CurrentMacroLabel=document.getElementById("CurrentMacro")
     RefreshSessions()
     //Ask for volume
     const slider = document.getElementById('volume-slider');
+    const sliderLabel = document.getElementById("volume-label")
     window.electronAPI.GetVolumes().then(result=>{
         console.log("Volume: ",result);
         slider.value=result
+        sliderLabel.innerHTML=result
     })
     slider.addEventListener('input', () => {
         //set volume
+        slider.value = Math.floor(Math.round(slider.value/5)*5);
+        sliderLabel.innerHTML=slider.value
         window.electronAPI.SetVolume(slider.value)
     });
     slider.addEventListener("mouseup",()=>{
         //save volume
         window.electronAPI.SaveVolume(slider.value)
     })
+
+    SideAButton.addEventListener('click', () => BeginRecordingMacro("SideA"));
+    SideBButton.addEventListener('click', () => BeginRecordingMacro("SideB"));
+
+    document.getElementById('closePopup').addEventListener('click', () => {
+        Popup.classList.add('hidden');
+    });
+
     window.electronAPI.SignalToRenderer("SendVolumeToRenderer",(volume)=>{
+        sliderLabel.innerHTML=volume
         slider.value=volume
     })
+
+    
 })
 function ResetSavedData()
 {
     window.electronAPI.SaveVolume(0)
     window.electronAPI.DeleteSessionData()
 }
+function BeginRecordingMacro(Side)
+{
+    Popup.classList.remove('hidden');
+    CurrentMacroLabel.innerHTML=""
+    //Get Current Macro for the given side
+    window.electronAPI.GetKeyboardMacro().then(result=>{
+        //display it
+        CurrentMacroLabel.innerHTML=`${result[Side].join(" + ")}`
+    })
+    //then begin recording macro
+    window.electronAPI.BeginKeyboardMacroRecord(Side)
+}
+
+window.electronAPI.SignalToRenderer("SendMacroBufferToRenderer",(MacroBuffer)=>{
+    CurrentMacroLabel.innerHTML=`${MacroBuffer.join(" + ")}`
+})
+

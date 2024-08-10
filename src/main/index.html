@@ -16,9 +16,12 @@
     <button onclick="RefreshSessions()">Refresh</button>
     <button onclick="ResetSavedData()">Reset saved data</button>
     <div class="volume-container">
-      <p>Side A</p>
-      <input type="range" id="volume-slider" min="-100" max="100" value="0">
-      <p>Side B</p>
+      <label for="volume-slider" id="volume-label" style="width: 100%; text-align: center;"></label>
+      <div class="flex-row">
+        <p>Side A</p>
+        <input type="range" id="volume-slider" min="-100" max="100" value="0">
+        <p>Side B</p>
+      </div>
     </div>
     <table style="width: 100%;" class="mainBody">
       <tr class="mainBodyEntry" id="Label">
@@ -28,6 +31,15 @@
         <th>Ignore</th>
       </tr>
     </table>
+
+    <div id="popup" class="hidden">
+      <div class="popup-content">
+          <p id="CurrentMacro"></p>
+          <button id="closePopup">Close</button>
+          <button id="SaveMacroBtn">Save</button>
+      </div>
+    </div>
+
   </body>
   <script src="./index.js"></script>
 </html>

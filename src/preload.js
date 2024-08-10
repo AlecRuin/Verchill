@@ -4,9 +4,11 @@ const {contextBridge,ipcRenderer} = require("electron/renderer")
 contextBridge.exposeInMainWorld("electronAPI",{
     RefreshSessions:()=>{return ipcRenderer.invoke("RefreshSessions")},
     GetVolumes:()=>{return ipcRenderer.invoke("GetVolumes")},
+    GetKeyboardMacro:()=>{return ipcRenderer.invoke("GetKeyboardMacro")},
 
+    BeginKeyboardMacroRecord:(Side)=>{ipcRenderer.send("BeginKeyboardMacroRecord",Side)},
     SetSession:(SessionData)=>{ipcRenderer.send("SetSession",SessionData)},
-    ToggleMacroChangeMode:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
+    //ToggleMacroChangeMode:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
     SetMacro:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
     SetVolume:(Volume)=>{ipcRenderer.send("SetVolume",Volume)},
     SaveVolume:(volume)=>{ipcRenderer.send("SaveVolume",volume)},

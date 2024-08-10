@@ -28,7 +28,6 @@ export function getAllSessions(){
         const device = devices[0];
         if (device && device.sessions.length > 0) {
             let cleanedResult = removeDuplicates(device.sessions)
-            console.log(cleanedResult );
             return cleanedResult
         }
     }
@@ -52,7 +51,6 @@ export function SetVolume(Channel:any,Volume:number){
         const device = devices[0];
         if (device && device.sessions.length > 0) {
             let {SideA,SideB} = calculateVars(Volume)
-            console.log(device.sessions);
             device.sessions.map(entry=>{
                 for(let item1 of Channel.SideA)
                 {
