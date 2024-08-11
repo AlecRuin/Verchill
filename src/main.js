@@ -230,7 +230,7 @@ loadModules().then(()=>{
   KbListener.addListener(HandleKeyboardInput);
 
   RecordKeyboardMacro = function(e,down){
-    if(!KeyBlacklist.includes(e.name))
+    if(!KeyBlacklist.includes(e.name)&&e.state==="DOWN"&&!KeyboardMacrosBuffer[Side].includes(e.name))
     {
       if(bIsVerboseLogging)Log("Keyboard input detected: ",e.name);
       if(bIsVerboseLogging)Log("KeyboardMacrosBuffer: ",KeyboardMacrosBuffer);
@@ -241,7 +241,7 @@ loadModules().then(()=>{
         KeyboardMacrosBuffer[Side][2]=e.name
       }
       if(bIsVerboseLogging)Log("KeyboardMacrosBuffer: ",KeyboardMacrosBuffer);
-      mainWindow.send("SendMacroBufferToRenderer",KeyboardMacrosBuffer)
+      mainWindow.send("SendMacroBufferToRenderer",KeyboardMacrosBuffer[Side])
     }
   }
 
@@ -255,17 +255,27 @@ loadModules().then(()=>{
     KbListener.addListener(RecordKeyboardMacro);
   })
 
-  ipcMain.on("SaveKeyboardMacroRecord",()=>{
+  ipcMain.handle("SaveKeyboardMacroRecord",(e,side)=>{
     KbListener.removeListener(RecordKeyboardMacro)
-  })
-  ipcMain.on("DisconnectListeners",()=>{
-    
-  })
-  ipcMain.on("ReconnectListeners",()=>{
-    KbListener.addListener(HandleKeyboardInput);
+    KeyboardMacros[side]=KeyboardMacrosBuffer[side]
+    SetMacroKeybindData(KeyboardMacros)
+    KbListener.addListener(HandleKeyboardInput)
+    return KeyboardMacros[side]
   })
 
+  ipcMain.on("AbortKeyboardMacroRecord",()=>{
+    KbListener.removeListener(RecordKeyboardMacro)
+    KeyboardMacrosBuffer={
+      SideA:[],
+      SideB:[]
+    }
+    Side=undefined;
+    KbListener.addListener(HandleKeyboardInput)
+  })
 
+  ipcMain.handle("GetKeyboardMacro",()=>{
+    return KeyboardMacros
+  })
   //#endregion
 
   //#region Sessions
@@ -316,7 +326,7 @@ loadModules().then(()=>{
     }
     return {AllSessions,SessionData}
   })
-
+  
   ipcMain.on("SetSession",(e,sessionData)=>{
     if(bIsVerboseLogging)Log("SetSession called with this data: ",sessionData);
     SessionData={
@@ -332,9 +342,6 @@ loadModules().then(()=>{
       DeleteSessionData()
   })
 
-  ipcMain.handle("GetKeyboardMacro",()=>{
-    return KeyboardMacros
-  })
   //#endregion
   
   //#region Volume

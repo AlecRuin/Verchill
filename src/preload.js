@@ -5,11 +5,15 @@ contextBridge.exposeInMainWorld("electronAPI",{
     RefreshSessions:()=>{return ipcRenderer.invoke("RefreshSessions")},
     GetVolumes:()=>{return ipcRenderer.invoke("GetVolumes")},
     GetKeyboardMacro:()=>{return ipcRenderer.invoke("GetKeyboardMacro")},
+    SaveKeyboardMacroRecord:(Side)=>{return ipcRenderer.invoke("SaveKeyboardMacroRecord",Side)},
 
     BeginKeyboardMacroRecord:(Side)=>{ipcRenderer.send("BeginKeyboardMacroRecord",Side)},
+
+    AbortKeyboardMacroRecord:()=>{ipcRenderer.send("AbortKeyboardMacroRecord")},
     SetSession:(SessionData)=>{ipcRenderer.send("SetSession",SessionData)},
     //ToggleMacroChangeMode:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
     SetMacro:()=>{ipcRenderer.send("ToggleMacroChangeMode")},
+
     SetVolume:(Volume)=>{ipcRenderer.send("SetVolume",Volume)},
     SaveVolume:(volume)=>{ipcRenderer.send("SaveVolume",volume)},
     DeleteSessionData:()=>{ipcRenderer.send("DeleteSessionData")},

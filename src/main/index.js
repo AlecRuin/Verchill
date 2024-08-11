@@ -1,4 +1,4 @@
-let mainBody,SessionData,SideAButton,SideBButton,CurrentMacroLabel,Popup
+let mainBody,SessionData,SideAButton,SideBButton,CurrentMacroLabel,Popup,SaveMacroBtn,side
 function DestroyAllSessionVisualizers(){
     document.querySelectorAll(".mainBodyEntry").forEach(entry=>{
         console.log(entry);
@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     SideAButton=document.getElementById('SideA')
     SideBButton=document.getElementById("SideB")
     Popup=document.getElementById('popup')
+    SaveMacroBtn=document.getElementById("SaveMacroBtn")
     CurrentMacroLabel=document.getElementById("CurrentMacro")
     RefreshSessions()
     //Ask for volume
@@ -103,9 +104,23 @@ document.addEventListener("DOMContentLoaded",()=>{
     SideAButton.addEventListener('click', () => BeginRecordingMacro("SideA"));
     SideBButton.addEventListener('click', () => BeginRecordingMacro("SideB"));
 
+    window.electronAPI.GetKeyboardMacro().then(result=>{
+        SideAButton.innerHTML=`${result["SideA"].join(" + ")}`
+        SideBButton.innerHTML=`${result["SideB"].join(" + ")}`
+    })
+
     document.getElementById('closePopup').addEventListener('click', () => {
+        //TODO: Disconnect listener, reconnect old one
+        window.electronAPI.AbortKeyboardMacroRecord()
         Popup.classList.add('hidden');
     });
+
+    SaveMacroBtn.addEventListener("click",()=>{
+        window.electronAPI.SaveKeyboardMacroRecord(side).then(result=>{
+            (side==="SideA")?SideAButton.innerHTML=`${result.join(" + ")}`:SideBButton.innerHTML=`${result.join(" + ")}`
+        })
+        Popup.classList.add('hidden');
+    })
 
     window.electronAPI.SignalToRenderer("SendVolumeToRenderer",(volume)=>{
         sliderLabel.innerHTML=volume
@@ -121,6 +136,7 @@ function ResetSavedData()
 }
 function BeginRecordingMacro(Side)
 {
+    side=Side
     Popup.classList.remove('hidden');
     CurrentMacroLabel.innerHTML=""
     //Get Current Macro for the given side
@@ -133,6 +149,10 @@ function BeginRecordingMacro(Side)
 }
 
 window.electronAPI.SignalToRenderer("SendMacroBufferToRenderer",(MacroBuffer)=>{
+    console.log("MacroBuffer: ",MacroBuffer);
+    
+    console.log(typeof MacroBuffer);
+    
     CurrentMacroLabel.innerHTML=`${MacroBuffer.join(" + ")}`
 })
 
