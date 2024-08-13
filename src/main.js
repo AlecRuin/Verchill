@@ -292,8 +292,8 @@ loadModules().then(()=>{
       SessionData={SideA:[],SideB:[],Ignore:[]}
       AllSessions.forEach(entry=>SessionData.SideA.push(entry.name.trim().replace(/\s+/g, '')||`UNKNOWN${unknownCount++}`))
     }else{
-      let flag=true
       AllSessions.forEach(entry=>{
+        let flag=true
         for(let item2 of SessionData.SideA)
         {
           if (entry.name ===item2) {
@@ -315,6 +315,7 @@ loadModules().then(()=>{
         {
           for(let item2 of SessionData.Ignore)
           {
+            console.log("item3: ",item2);
             if (entry.name ===item2) {
               flag=false
               break

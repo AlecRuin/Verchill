@@ -28,6 +28,12 @@ export function getAllSessions(){
         const device = devices[0];
         if (device && device.sessions.length > 0) {
             let cleanedResult = removeDuplicates(device.sessions)
+            cleanedResult = cleanedResult.map(str => {
+                return {
+                    ...str,
+                    name: str.name.trim().replace(/\s+/g, '')
+                };
+            });
             return cleanedResult
         }
     }

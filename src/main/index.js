@@ -1,7 +1,6 @@
 let mainBody,SessionData,SideAButton,SideBButton,CurrentMacroLabel,Popup,SaveMacroBtn,side
 function DestroyAllSessionVisualizers(){
     document.querySelectorAll(".mainBodyEntry").forEach(entry=>{
-        console.log(entry);
         if (entry.id!="Label")entry.remove()
     })
 }
@@ -59,13 +58,13 @@ function RefreshSessions(){
                         </button>
                     </td>
                     <td class="SideA">
-                    ${result.SessionData.SideA.includes(entry.name)?entry.name.trim():""}
+                    ${result.SessionData.SideA.includes(entry.name)?entry.name.trim().replace(/\s+/g, ''):""}
                     </td>
                     <td class="SideB">
-                    ${result.SessionData.SideB.includes(entry.name)?entry.name.trim():""}
+                    ${result.SessionData.SideB.includes(entry.name)?entry.name.trim().replace(/\s+/g, ''):""}
                     </td>
                     <td class="Ignore">
-                    ${result.SessionData.Ignore.includes(entry.name)?entry.name.trim():""}
+                    ${result.SessionData.Ignore.includes(entry.name)?entry.name.trim().replace(/\s+/g, ''):""}
                     </td>
                 </tr>
                 `
@@ -156,3 +155,6 @@ window.electronAPI.SignalToRenderer("SendMacroBufferToRenderer",(MacroBuffer)=>{
     CurrentMacroLabel.innerHTML=`${MacroBuffer.join(" + ")}`
 })
 
+setInterval(() => {
+    RefreshSessions()
+}, 2000);
