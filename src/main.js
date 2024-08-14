@@ -1,6 +1,7 @@
 const {app,BrowserWindow,Tray,Menu, ipcMain,screen} = require("electron")
 const path = require('node:path');
-const {ClearFile,Log} = require("./logging.js")
+const {ClearFile,Log,SetDir} = require("./logging.js")
+SetDir(app.getPath("userData"))
 const windowStateKeeper = require("electron-window-state")
 require("ts-node/register")
 const {getAllSessions,SetVolume} = require("./VolumeMixer")
@@ -28,11 +29,10 @@ loadModules().then(()=>{
   if (require('electron-squirrel-startup')) {
     app.quit();
   }
-
   ClearFile()
-  DeleteAllData()
+  //DeleteAllData()
   let SessionData = GetSessionData();
-  let bIsVerboseLogging = GetLoggingState()||true;
+  let bIsVerboseLogging = GetLoggingState()||false;
   let KeyboardMacros = GetMacroKeybindData()||{
     SideA:["LEFT CTRL","LEFT ALT","MINUS"],
     SideB:["LEFT CTRL","LEFT ALT","EQUALS"]
@@ -99,7 +99,7 @@ loadModules().then(()=>{
     if(bIsVerboseLogging)Log("Loading HTML file from ",path.join(__dirname,"./main/index.html"));
     mainWindow.loadFile(path.join(__dirname, './main/index.html'));
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
     mainWindow.on("close",(e)=>{
       e.preventDefault();
       if(bIsVerboseLogging)Log("Saving window state manually...");
@@ -204,22 +204,22 @@ loadModules().then(()=>{
   const {GlobalKeyboardListener} = require("node-global-key-listener")
   KbListener = new GlobalKeyboardListener({windows:{onError:(err)=>{console.error(err)}}});
   HandleKeyboardInput=function(e,down){
-    if(KeyboardMacros.SideA.every(key=>down[key]))
+    let flag = false
+    if(e.state=="DOWN"&&e.name==KeyboardMacros.SideA[KeyboardMacros.SideA.length-1]&&(KeyboardMacros.SideA.length==1||KeyboardMacros.SideA.slice(0,-1).every(key=>down[key])))
     {
       if(bIsVerboseLogging)Log("Favoring Side A");
       volume=Math.max(-100,volume-5)
-      if(bIsVerboseLogging)Log("Volume: ",volume);
-      SetVolume(SessionData,volume)
-      SetVolumeData(volume)
-      if(bIsVerboseLogging)Log("Sending volume value back to renderer");
-      mainWindow.send("SendVolumeToRenderer",volume)
-      if(bIsVerboseLogging)Log("Showing overlay window");
-      showOverlay()
+      flag=true
     }
-    if(KeyboardMacros.SideB.every(key=>down[key])){
+    if(e.state=="DOWN"&&e.name==KeyboardMacros.SideB[KeyboardMacros.SideB.length-1]&&(KeyboardMacros.SideB.length==1||KeyboardMacros.SideB.slice(0,-1).every(key=>down[key])))
+    {
       if(bIsVerboseLogging)Log("Favoring Side B");
       volume=Math.min(100,volume+5)
-      if(bIsVerboseLogging)Log("Volume: ",volume);
+      flag=true
+    }
+    if(flag)
+    {
+      if(bIsVerboseLogging)Log("New volume: ",volume);
       SetVolume(SessionData,volume)
       SetVolumeData(volume)
       if(bIsVerboseLogging)Log("Sending volume value back to renderer");
@@ -355,9 +355,9 @@ loadModules().then(()=>{
     SetVolume(SessionData,volume)
     return volume
   })
-  ipcMain.on("SetVolume",(e,volume)=>{
+  ipcMain.on("SetVolume",(e,Volume)=>{
     if(bIsVerboseLogging)Log("SetVolume called with: ",volume);
-    volume=volume
+    volume=Volume
     if(bIsVerboseLogging)Log("Setting volume to: ",volume);
     SetVolume(SessionData,volume)
   })
