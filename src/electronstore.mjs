@@ -42,3 +42,10 @@ export function SetLoggingState(data)
 {
     store.set("LoggingState",data)
 }
+export function DeleteAllData()
+{
+    store.delete("SessionData")
+    store.delete("LoggingState")
+    store.delete("Keybinds")
+    store.delete("VolumeData")
+}

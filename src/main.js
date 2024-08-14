@@ -6,7 +6,7 @@ require("ts-node/register")
 const {getAllSessions,SetVolume} = require("./VolumeMixer")
 
 //#region Module
-let GetSessionData,GetVolumeData,GetMacroKeybindData,SetSessionData,SetVolumeData,SetMacroKeybindData,DeleteSessionData,GetLoggingState,SetLoggingState;
+let GetSessionData,GetVolumeData,GetMacroKeybindData,SetSessionData,SetVolumeData,SetMacroKeybindData,DeleteSessionData,GetLoggingState,SetLoggingState,DeleteAllData;
 async function loadModules(){
   let module = await import("./electronstore.mjs")
   GetSessionData=module.GetSessionData;
@@ -18,6 +18,7 @@ async function loadModules(){
   DeleteSessionData=module.DeleteSessionData
   GetLoggingState=module.GetLoggingState
   SetLoggingState=module.SetLoggingState
+  DeleteAllData=module.DeleteAllData
 }
 //#endregion
 
@@ -29,8 +30,9 @@ loadModules().then(()=>{
   }
 
   ClearFile()
+  DeleteAllData()
   let SessionData = GetSessionData();
-  let bIsVerboseLogging = GetLoggingState()||false;
+  let bIsVerboseLogging = GetLoggingState()||true;
   let KeyboardMacros = GetMacroKeybindData()||{
     SideA:["LEFT CTRL","LEFT ALT","MINUS"],
     SideB:["LEFT CTRL","LEFT ALT","EQUALS"]
@@ -82,7 +84,7 @@ loadModules().then(()=>{
       height: mainWindowState.height,
       x:mainWindowState.x,
       y:mainWindowState.y,
-      icon:path.join(__dirname,"./media/V.ico"),
+      icon:path.join(__dirname,"./media/nowiwin.ico"),
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
       },
