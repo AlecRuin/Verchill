@@ -156,5 +156,5 @@ window.electronAPI.SignalToRenderer("SendMacroBufferToRenderer",(MacroBuffer)=>{
 })
 
 setInterval(() => {
-    RefreshSessions()
+    //RefreshSessions()
 }, 2000);

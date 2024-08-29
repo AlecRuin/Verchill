@@ -25,7 +25,7 @@ function calculateVars(value:number):{SideA:number;SideB:number} {
 export function getAllSessions(){
     const devices: Device[] = SoundMixer.devices;
     if (devices.length > 0) {
-        const device = devices[0];
+        const device = devices.reduce((max, current) => current.sessions.length > max.sessions.length ? current : max);
         if (device && device.sessions.length > 0) {
             let cleanedResult = removeDuplicates(device.sessions)
             cleanedResult = cleanedResult.map(str => {
@@ -42,7 +42,7 @@ export function getAllSessions(){
 export function setVolumeToZero() {
     const devices: Device[] = SoundMixer.devices;
     if (devices.length > 0) {
-        const device = devices[0];
+        const device = devices.reduce((max, current) => current.sessions.length > max.sessions.length ? current : max);
         if (device && device.sessions.length > 0) {
             device.sessions.map(entry=>{
                 entry.volume=0;
@@ -54,7 +54,7 @@ export function setVolumeToZero() {
 export function SetVolume(Channel:any,Volume:number){
     const devices: Device[] = SoundMixer.devices;
     if (devices.length > 0) {
-        const device = devices[0];
+        const device = devices.reduce((max, current) => current.sessions.length > max.sessions.length ? current : max);
         if (device && device.sessions.length > 0) {
             let {SideA,SideB} = calculateVars(Volume)
             device.sessions.map(entry=>{
